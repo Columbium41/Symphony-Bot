@@ -18,12 +18,12 @@ module.exports = (client) => {
         
         if (event.name) {  // Event name exists
 
-            client.on(event.name, event.bind(null, client));
-            console.log( ("Successfully binded the " + event.name + " event.").fontcolor("#00ff00") );
+            client.on(event.name, (client) => event.execute(client));
+            console.log("\033[32mSuccessfully binded the " + event.name + " event.\033[0m");
 
         } else {  // Event name does not exist
 
-            console.log( ("Error while loading " + event + " event file.").fontcolor("#ff0000") );
+            console.log("\033[31mError while loading " + event + " event file.\033[0m");
 
         }
 

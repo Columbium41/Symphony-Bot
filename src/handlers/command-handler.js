@@ -19,11 +19,11 @@ module.exports = (client) => {
         if (command.name) {  // Command Name exists
 
             client.commands.set(command.name, command);
-            console.log( ("Successfully loaded the " + command.name + " command.").fontcolor("#00ff00") );
+            console.log("\033[32mSuccessfully loaded the " + command.name + " command.\033[0m");
 
         } else {  // No command name
 
-            console.log( ("Error while loading " + command + " command file.").fontcolor("#ff0000") );
+            console.log("\033[31mError while loading " + command + " command file.\033[0m");
 
         }
 

@@ -15,15 +15,16 @@ const { Client, Intents, Collection } = require("discord.js");
 // The client instance is shared across all guilds the bot is in
 const client = new Client( { intents: [Intents.FLAGS.GUILDS] } );
 client.commands = new Collection();
-client.events = new Collection();
 
 // Require handler files
 const fs = require("fs");
 fs.readdir("./src/handlers/", (error, files) => {
 
     if (error) {
+
         console.log(error);
         process.exit(1);
+
     } else {
 
         // Require all handler files (pass in client)
