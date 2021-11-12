@@ -6,6 +6,6 @@
 
 module.exports = async (client) => {
 
-    return await console.log(`${client.user.username} has successfully logged in!`);
+    await console.log(`${client.user.username} has successfully logged in!`);
 
 }
