@@ -4,6 +4,9 @@
  * The index file of the bot
 */
 
+// Util
+const { log } = require("../util/log-error");
+
 // Get environment variables
 const dotenv = require("dotenv");
 dotenv.config();
@@ -23,6 +26,7 @@ fs.readdir("./src/handlers/", (error, files) => {
     if (error) {
 
         console.log(error);
+        log(error);
         process.exit(1);
 
     } else {

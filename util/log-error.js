@@ -8,8 +8,15 @@ const fs = require("fs");
 
 module.exports.log = async function(message) {
 
+    // Get current log contents and concatenate message to log contents
+    const logContents = fs.readFileSync("./logs.txt", "utf-8", (err) => {
+        if (err) {
+            console.log(err);
+        }
+    });
+
     // Write to log file
-    fs.writeFile("./logs.txt", message, (err) => {
+    fs.writeFile("./logs.txt", (logContents + "\n" + message), (err) => {
         
         // Error while logging to file
         if (err) {

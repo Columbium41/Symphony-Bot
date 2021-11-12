@@ -5,6 +5,7 @@
 */
 
 const fs = require("fs");
+const { log } = require("../../util/log-error");
 
 module.exports = (client) => {
 
@@ -18,9 +19,12 @@ module.exports = (client) => {
         
         if (event.name) {  // Event name exists
 
-            if (event.once) {  // Event only triggers once
+            // Event only triggers once
+            if (event.once) {  
                 client.once(event.name, (client) => event.execute(client));
-            } else {  // Event can trigger multiple times
+            } 
+            // Event can trigger multiple times
+            else {  
                 client.on(event.name, (client) => event.execute(client));
             }
 
@@ -28,7 +32,8 @@ module.exports = (client) => {
 
         } else {  // Event name does not exist
 
-            console.log("\033[31mError while loading " + event + " event file.\033[0m");
+            console.log("\033[31mError while loading " + file + " event file.\033[0m");
+            log("Error while loading " + file + " event file.");
 
         }
 

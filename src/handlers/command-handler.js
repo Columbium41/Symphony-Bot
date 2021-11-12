@@ -5,6 +5,7 @@
 */
 
 const fs = require("fs");
+const { log } = require("../../util/log-error");
 
 module.exports = (client) => {
 
@@ -23,7 +24,8 @@ module.exports = (client) => {
 
         } else {  // No command name
 
-            console.log("\033[31mError while loading " + command + " command file.\033[0m");
+            console.log("\033[31mError while loading " + file + " command file.\033[0m");
+            log("Error while loading " + file + " command file."); 
 
         }
 
