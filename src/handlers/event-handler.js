@@ -18,7 +18,12 @@ module.exports = (client) => {
         
         if (event.name) {  // Event name exists
 
-            client.on(event.name, (client) => event.execute(client));
+            if (event.once) {  // Event only triggers once
+                client.once(event.name, (client) => event.execute(client));
+            } else {  // Event can trigger multiple times
+                client.on(event.name, (client) => event.execute(client));
+            }
+
             console.log("\033[32mSuccessfully binded the " + event.name + " event.\033[0m");
 
         } else {  // Event name does not exist
