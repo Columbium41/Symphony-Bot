@@ -27,7 +27,6 @@ fs.readdir("./src/handlers/", (error, files) => {
 
         console.log(error);
         log(error);
-        process.exit(1);
 
     } else {
 

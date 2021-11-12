@@ -21,11 +21,11 @@ module.exports = (client) => {
 
             // Event only triggers once
             if (event.once) {  
-                client.once(event.name, (client) => event.execute(client));
+                client.once(event.name, (...args) => event.execute(...args));
             } 
             // Event can trigger multiple times
             else {  
-                client.on(event.name, (client) => event.execute(client));
+                client.on(event.name, (...args) => event.execute(...args));
             }
 
             console.log("\033[32mSuccessfully binded the " + event.name + " event.\033[0m");
