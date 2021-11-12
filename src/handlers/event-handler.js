@@ -16,19 +16,12 @@ module.exports = (client) => {
     for (const file of eventsFiles) {
 
         const event = require(`../events/${file}`);
+        const eventName = file.split(".")[0];
         
-        if (event.name) {  // Event name exists
+        if (eventName) {  // Event name exists
 
-            // Event only triggers once
-            if (event.once) {  
-                client.once(event.name, (...args) => event.execute(...args));
-            } 
-            // Event can trigger multiple times
-            else {  
-                client.on(event.name, (...args) => event.execute(...args));
-            }
-
-            console.log("\033[32mSuccessfully binded the " + event.name + " event.\033[0m");
+            client.on(eventName, event.bind(null, client));
+            console.log("\033[32mSuccessfully binded the " + eventName + " event.\033[0m");
 
         } else {  // Event name does not exist
 

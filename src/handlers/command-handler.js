@@ -17,10 +17,10 @@ module.exports = (client) => {
     
         const command = require(`../commands/${file}`);
 
-        if (command.name) {  // Command Name exists
+        if (command.data.name) {  // Command Name exists
 
-            client.commands.set(command.name, command);
-            console.log("\033[32mSuccessfully loaded the " + command.name + " command.\033[0m");
+            client.commands.set(command.data.name, command);
+            console.log("\033[32mSuccessfully loaded the " + command.data.name + " command.\033[0m");
 
         } else {  // No command name
 
