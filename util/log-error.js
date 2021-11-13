@@ -6,7 +6,7 @@
 
 const fs = require("fs");
 
-module.exports.log = async function(message) {
+module.exports.log = async function (message) {
 
     // Get current log contents and concatenate message to log contents
     const logContents = fs.readFileSync("./logs.txt", "utf-8", (err) => {
@@ -15,9 +15,12 @@ module.exports.log = async function(message) {
         }
     });
 
+    // Get current date
+    const date = new Date().toLocaleString();
+
     // Write to log file
-    fs.writeFile("./logs.txt", (logContents + message + "\n"), (err) => {
-        
+    fs.writeFile("./logs.txt", (logContents + date + " - " + message + "\n"), (err) => {
+
         // Error while logging to file
         if (err) {
             console.log(err);
