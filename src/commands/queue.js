@@ -7,6 +7,7 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { embed } = require("../../util/embed");
 const { log } = require("../../util/log-error");
+const { play } = require("../play");
 const ytdl = require("ytdl-core");
 const ytpl = require("ytpl");
 const yts = require("yt-search");
@@ -27,6 +28,9 @@ async function addQueue(interaction, song) {
 
         // Add queue to map
         interaction.client.queues.set(interaction.guildId, queue);
+
+        // Play the song (client, guildId, channel)
+        await play(interaction.client, interaction.guildId, interaction.channel);
 
     } else {
 
@@ -85,7 +89,8 @@ module.exports = {
 
                 }
 
-                return await interaction.reply(`Queued ${songs.length} songs`);
+                reply = embed(interaction.member.user, "Queue", `Queued ${songs.length} songs`);
+                return await interaction.reply( { embeds: [reply] } );
 
             }
             else if (ytdl.validateURL(songArg)) {  // video url
