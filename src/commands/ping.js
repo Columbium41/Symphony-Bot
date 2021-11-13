@@ -5,6 +5,7 @@
 */
 
 const { SlashCommandBuilder } = require("@discordjs/builders");
+const { embed } = require("../../util/embed");
 
 module.exports = {
 
@@ -16,7 +17,14 @@ module.exports = {
 
     // Execute Command
     async run(interaction) {
-        await interaction.reply("Pong!");
+
+        let reply = embed(interaction.user, "Ping", ":ping_pong: Pong!");
+        reply.fields = [ 
+            { name: "Response Latency", value: `${Date.now() - interaction.createdTimestamp}ms` }, 
+            { name: "API Latency", value: `${Math.round(interaction.client.ws.ping)}ms` } 
+        ];
+
+        await interaction.reply( { embeds: [reply] } );
     }
 
 }

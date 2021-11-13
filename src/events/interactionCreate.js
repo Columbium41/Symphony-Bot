@@ -5,6 +5,7 @@
 */
 
 const { log } = require("../../util/log-error");
+const { embed } = require("../../util/embed");
 
 module.exports = async (client, interaction) => {
     
@@ -22,7 +23,8 @@ module.exports = async (client, interaction) => {
 
         console.log(error);
         log(error);
-        await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+        const reply = embed(interaction.user, "Error", ":sweat_smile: There was an error while executing this command.");
+        await interaction.reply( { embeds: [reply] } );
 
     }
 

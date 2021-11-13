@@ -16,7 +16,7 @@ module.exports.log = async function(message) {
     });
 
     // Write to log file
-    fs.writeFile("./logs.txt", (logContents + "\n" + message), (err) => {
+    fs.writeFile("./logs.txt", (logContents + message + "\n"), (err) => {
         
         // Error while logging to file
         if (err) {
