@@ -16,8 +16,14 @@ const { Client, Intents, Collection } = require("discord.js");
 
 // Create a new client instance
 // The client instance is shared across all guilds the bot is in
-const client = new Client( { intents: [Intents.FLAGS.GUILDS] } );
+const client = new Client( { intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.GUILD_PRESENCES] } );
 client.commands = new Collection();
+
+// Song queues (Key: Guild ID, Value: Queue object)
+client.queues = new Map();
+
+// Voice connections (Key: Guild ID, Value: connection)
+client.connections = new Map();
 
 // Require handler files
 const fs = require("fs");
