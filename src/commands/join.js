@@ -25,7 +25,7 @@ module.exports = {
         // Check if the bot isn't in a VC and the user is currently in one
         const userVC = interaction.member.voice.channel;
         const botVC = interaction.guild.me.voice.channel;
-        if (botVC !== null) {
+        if (botVC !== null) { 
             reply = embed(interaction.member.user, "Join", ":x: I'm already in a voice channel.");
             return await interaction.reply( {embeds: [reply]} );
         }
