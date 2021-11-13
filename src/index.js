@@ -20,6 +20,7 @@ const client = new Client( { intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD
 client.commands = new Collection();
 
 // Song queues (Key: Guild ID, Value: Queue object)
+// Queue object: 
 client.queues = new Map();
 
 // Voice connections (Key: Guild ID, Value: connection)
