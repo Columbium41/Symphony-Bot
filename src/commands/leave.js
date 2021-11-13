@@ -17,7 +17,7 @@ module.exports = {
         .setDefaultPermission(true),
 
     // Executre Command
-    async run(client, interaction) {
+    async run(interaction) {
 
         let reply = null;
 
@@ -34,11 +34,11 @@ module.exports = {
         }
 
         // Check if there is an existing connection for this server
-        if (client.connections.get(interaction.guildId)) {
+        if (interaction.client.connections.get(interaction.guildId)) {
 
             // Destroy the connection and remove it
-            client.connections.get(interaction.guildId).destroy();
-            client.connections.delete(interaction.guildId);
+            interaction.client.connections.get(interaction.guildId).destroy();
+            interaction.client.connections.delete(interaction.guildId);
 
             reply = embed(interaction.member.user, "Leave", `:wave: Successfully left ${userVC.name}.`);
             return await interaction.reply( {embeds: [reply]} );

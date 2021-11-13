@@ -18,7 +18,7 @@ module.exports = async (client, interaction) => {
 
     // Execute the command
     try {
-        await command.run(client, interaction);
+        await command.run(interaction);
     } catch (error) {
 
         console.log(error);

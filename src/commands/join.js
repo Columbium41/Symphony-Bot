@@ -18,7 +18,7 @@ module.exports = {
         .setDefaultPermission(true),
 
     // Execute Command
-    async run(client, interaction) {
+    async run(interaction) {
 
         let reply = null;
 
@@ -35,7 +35,7 @@ module.exports = {
         }
 
         // Check if there is an existing connection for this server
-        if (!client.connections.get(interaction.guildId)) {
+        if (!interaction.client.connections.get(interaction.guildId)) {
             
             // create a connection
             const connection = joinVoiceChannel({
@@ -45,7 +45,7 @@ module.exports = {
             });
 
             // add the connection to the client connection map
-            client.connections.set(interaction.guildId, connection);
+            interaction.client.connections.set(interaction.guildId, connection);
 
             reply = embed(interaction.member.user, "Join", `:speaker: Successfully joined ${userVC.name}.`);
             return await interaction.reply( {embeds: [reply]} );
