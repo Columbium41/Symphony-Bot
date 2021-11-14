@@ -31,12 +31,12 @@ module.exports.play = async (client, guildId, channel) => {
     const currentQueue = client.queues.get(guildId);
     const connection = getVoiceConnection(guildId);
 
-    // Create an audio player and subscribe to the connection (pauses if there are no subscribers)
+    // Create an audio player and subscribe to the connection
     const audioPlayer = createAudioPlayer();
     connection.subscribe(audioPlayer);
 
     // Convert the song url to an audio resource
-    let resource = convertURL(currentQueue.songs[0]);
+    const resource = convertURL(currentQueue.songs[0]);
 
     // Play the song
     audioPlayer.play(resource);
@@ -46,33 +46,7 @@ module.exports.play = async (client, guildId, channel) => {
     audioPlayer.on(AudioPlayerStatus.Idle, () => {
 
         currentQueue.songs.shift();
-
-        // Leave the channel if the queue is over
-        if (currentQueue.songs.length === 0) {
-
-            try {
-
-                connection.destroy();
-                client.queues.delete(guildId);
-
-                const reply = embed(client.user, "Queue Finished", ":wave: I'm not playing anything anymore.");
-                channel.send({ embeds: [reply] });
-
-            } catch (error) {
-
-                console.log(error);
-                log(error);
-
-            }
-
-        } else {
-
-            // Get the next song and play it
-            resource = convertURL(currentQueue.songs[0]);
-            audioPlayer.play(resource);
-            sendMessage(currentQueue.songs[0], channel, client);
-
-        }
+        this.play(client, guildId, channel);
 
     });
 
