@@ -1,6 +1,6 @@
 /*
  * Charley Liu
- * 2021-11-12
+ * 2021-11-13
  * A command that queues a song for the bot to play
 */
 
@@ -78,7 +78,7 @@ module.exports = {
             // Find if the song argument is a playlist, video url, or set of keywords
 
             if (ytpl.validateID(songArg)) {  // playlist
-
+                
                 const songs = (await ytpl(songArg)).items;
                 
                 // Loop through songs and add them to the queue

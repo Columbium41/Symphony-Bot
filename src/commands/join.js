@@ -7,7 +7,7 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { embed } = require("../../util/embed");
 const { log } = require("../../util/log-error");
-const { joinVoiceChannel, VoiceConnectionStatus } = require("@discordjs/voice");
+const { joinVoiceChannel, VoiceConnectionStatus, getVoiceConnection, entersState } = require("@discordjs/voice");
 
 module.exports = {
 
@@ -35,7 +35,7 @@ module.exports = {
         }
 
         // Check if there is an existing connection for this server
-        if (!interaction.client.connections.get(interaction.guildId)) {
+        if (!getVoiceConnection(interaction.guildId)) {
 
             // create a connection
             const connection = joinVoiceChannel({
@@ -46,12 +46,11 @@ module.exports = {
 
             // Send a message once the voice connection has been established
             connection.on(VoiceConnectionStatus.Ready, async () => {
-                reply = embed(interaction.member.user, "Join", `:speaker: Successfully joined ${userVC.name}.`);
-                await interaction.reply({ embeds: [reply] });
-            });
 
-            // add the connection to the client connection map
-            interaction.client.connections.set(interaction.guildId, connection);
+                reply = embed(interaction.member.user, "Join", `:speaker: Successfully joined ${userVC.name}.`);
+                return await interaction.reply({ embeds: [reply] });
+
+            });
 
         } else {
 
@@ -60,6 +59,21 @@ module.exports = {
             return await interaction.reply({ embeds: [reply] });
 
         }
+
+        // Watch for disconnects
+        const connection = getVoiceConnection(interaction.guildId);
+        connection.on(VoiceConnectionStatus.Disconnected, async (oldState, newState) => {
+            try {
+                await Promise.race([
+                    entersState(connection, VoiceConnectionStatus.Signalling, 5_000),
+                    entersState(connection, VoiceConnectionStatus.Connecting, 5_000),
+                ]);
+                // Seems to be reconnecting to a new channel - ignore disconnect
+            } catch (error) {
+                // Seems to be a real disconnect which SHOULDN'T be recovered from
+                connection.destroy();
+            }
+        });
 
     }
 

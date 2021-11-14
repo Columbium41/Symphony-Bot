@@ -5,7 +5,7 @@
 */
 
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const { VoiceConnectionStatus } = require("@discordjs/voice");
+const { VoiceConnectionStatus, getVoiceConnection } = require("@discordjs/voice");
 const { embed } = require("../../util/embed");
 const { log } = require("../../util/log-error");
 
@@ -35,18 +35,18 @@ module.exports = {
         }
 
         // Check if there is an existing connection for this server
-        if (interaction.client.connections.get(interaction.guildId)) {
+        const connection = getVoiceConnection(interaction.guildId);
+        if (connection) {
 
             // Send a message once the bot's connection has been destroyed
-            interaction.client.connections.get(interaction.guildId).on(VoiceConnectionStatus.Destroyed, async () => {
+            connection.on(VoiceConnectionStatus.Destroyed, async () => {
                 reply = embed(interaction.member.user, "Leave", `:wave: Successfully left ${userVC.name}.`);
                 await interaction.reply({ embeds: [reply] });
             });
 
             // Destroy the connection and queue
-            interaction.client.connections.get(interaction.guildId).destroy();
+            connection.destroy();
             interaction.client.queues.delete(interaction.guildId);
-            interaction.client.connections.delete(interaction.guildId);
 
         } else {
 

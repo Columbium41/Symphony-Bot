@@ -23,9 +23,6 @@ client.commands = new Collection();
 // Queue object: 
 client.queues = new Map();
 
-// Voice connections (Key: Guild ID, Value: connection)
-client.connections = new Map();
-
 // Require handler files
 const fs = require("fs");
 fs.readdir("./src/handlers/", (error, files) => {

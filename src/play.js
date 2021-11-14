@@ -1,13 +1,13 @@
 /*
  * Charley Liu
- * 2021-11-12
+ * 2021-11-13
  * A file that handles playing music
 */
 
 const ytdl = require("ytdl-core");
 const { embed } = require("../util/embed");
 const { log } = require("../util/log-error");
-const { createAudioPlayer, NoSubscriberBehavior, createAudioResource, StreamType, AudioPlayerStatus } = require("@discordjs/voice");
+const { createAudioPlayer, NoSubscriberBehavior, createAudioResource, StreamType, AudioPlayerStatus, getVoiceConnection } = require("@discordjs/voice");
 
 // Send a message to a channel everytime a new song plays
 async function sendMessage(song, channel, client) {
@@ -21,7 +21,7 @@ async function sendMessage(song, channel, client) {
 function convertURL(song) {
 
     const stream = ytdl(song.url, { filter: "audioonly" });
-    const resource = createAudioResource(stream, { inputType: StreamType.Arbitrary }, { inlineVolume: true });
+    const resource = createAudioResource(stream, { inputType: StreamType.Arbitrary });
     return resource;
 
 }
@@ -29,14 +29,11 @@ function convertURL(song) {
 module.exports.play = async (client, guildId, channel) => {
 
     const currentQueue = client.queues.get(guildId);
+    const connection = getVoiceConnection(guildId);
 
     // Create an audio player and subscribe to the connection (pauses if there are no subscribers)
-    const audioPlayer = createAudioPlayer({
-        behaviors: {
-            noSubscriber: NoSubscriberBehavior.Pause,
-        },
-    });
-    client.connections.get(guildId).subscribe(audioPlayer);
+    const audioPlayer = createAudioPlayer();
+    connection.subscribe(audioPlayer);
 
     // Convert the song url to an audio resource
     let resource = convertURL(currentQueue.songs[0]);
@@ -48,7 +45,6 @@ module.exports.play = async (client, guildId, channel) => {
     // Wait for the song to finish and play the next song
     audioPlayer.on(AudioPlayerStatus.Idle, () => {
 
-        audioPlayer.stop();
         currentQueue.songs.shift();
 
         // Leave the channel if the queue is over
@@ -56,9 +52,8 @@ module.exports.play = async (client, guildId, channel) => {
 
             try {
 
-                client.connections.get(guildId).destroy();
+                connection.destroy();
                 client.queues.delete(guildId);
-                client.connections.delete(guildId);
 
                 const reply = embed(client.user, "Queue Finished", ":wave: I'm not playing anything anymore.");
                 channel.send({ embeds: [reply] });
