@@ -63,6 +63,7 @@ module.exports = {
         // Watch for disconnects
         const connection = getVoiceConnection(interaction.guildId);
         connection.on(VoiceConnectionStatus.Disconnected, async (oldState, newState) => {
+            console.log("Bot Disconnected!");
             try {
                 await Promise.race([
                     entersState(connection, VoiceConnectionStatus.Signalling, 5_000),

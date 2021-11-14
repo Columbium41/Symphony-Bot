@@ -9,6 +9,8 @@ const { embed } = require("../util/embed");
 const { log } = require("../util/log-error");
 const { createAudioPlayer, NoSubscriberBehavior, createAudioResource, StreamType, AudioPlayerStatus, getVoiceConnection } = require("@discordjs/voice");
 
+const audioPlayer = createAudioPlayer();
+
 // Send a message to a channel everytime a new song plays
 async function sendMessage(song, channel, client) {
 
@@ -31,8 +33,15 @@ module.exports.play = async (client, guildId, channel) => {
     const currentQueue = client.queues.get(guildId);
     const connection = getVoiceConnection(guildId);
 
+    // Check if the queue is empty
+    if (currentQueue.songs.length === 0) {
+
+        const reply = embed(interaction.client.user, "Queue Finished", ":wave: I'm not playing anything anymore.");
+        return await interaction.reply({ embeds: [reply] });
+
+    }
+
     // Create an audio player and subscribe to the connection
-    const audioPlayer = createAudioPlayer();
     connection.subscribe(audioPlayer);
 
     // Convert the song url to an audio resource
