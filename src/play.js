@@ -43,7 +43,7 @@ module.exports.play = async (client, guildId) => {
     // Check if the queue is empty
     if (queue.songs.length === 0) {
 
-        const reply = embed(interaction.client.user, "Queue Finished", ":wave: I'm not playing anything anymore.");
+        const reply = embed(client.user, "Queue Finished", ":wave: I'm not playing anything anymore.");
         connection.destroy();
         return await queue.channel.send({ embeds: [reply] });
 
