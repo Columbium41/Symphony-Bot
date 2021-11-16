@@ -7,6 +7,11 @@
 const dotenv = require("dotenv");
 dotenv.config();
 
+// A function that embeds messages with a title and description
+// @param user - The user that the embed should contain
+// @param title - The title of the embed
+// @param description - The description of the embed
+// @return - returns the embed
 module.exports.embed = function(user, title, description) {
 
     const embed = {

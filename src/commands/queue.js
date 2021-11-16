@@ -19,8 +19,17 @@ async function addQueue(interaction, song) {
     if (!interaction.client.queues.get(interaction.guildId)) {
 
         // Queue constructor
+        // @param songs - A list of songs to be played by the bot
+        // @param audioPlayer - The audio player attributed to the bot
+        // @param audioResource - The current audio resource being played by the bot
+        // @param channel - The channel the queue was instantiated in
         const queue = {
-            songs: []
+
+            songs: [],
+            audioPlayer: null,
+            audioResource: null,
+            channel: interaction.channel
+
         }
 
         // Add song to queue
@@ -30,7 +39,7 @@ async function addQueue(interaction, song) {
         interaction.client.queues.set(interaction.guildId, queue);
 
         // Play the song (client, guildId, channel)
-        await play(interaction.client, interaction.guildId, interaction.channel);
+        await play(interaction.client, interaction.guildId);
 
     } else {
 
@@ -89,7 +98,7 @@ module.exports = {
 
                 }
 
-                reply = embed(interaction.member.user, "Queue", `Queued ${songs.length} songs`);
+                reply = embed(interaction.member.user, "Queue", `:white_check_mark: Queued ${songs.length} songs`);
                 return await interaction.reply( { embeds: [reply] } );
 
             }
@@ -127,7 +136,10 @@ module.exports = {
 
             }
 
-        } catch (error) {
+        } 
+        
+        // Error occured while trying to gather song information
+        catch (error) {
 
             console.log(error);
             log(error);

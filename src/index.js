@@ -20,7 +20,7 @@ const client = new Client( { intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD
 client.commands = new Collection();
 
 // Song queues (Key: Guild ID, Value: Queue object)
-// Queue object: 
+// Queue object: songs[], audioPlayer, resource
 client.queues = new Map();
 
 // Require handler files
@@ -34,7 +34,7 @@ fs.readdir("./src/handlers/", (error, files) => {
 
     } else {
 
-        // Require all handler files (pass in client)
+        // Require all handler files (pass in client object)
         files.forEach(file => {
             
             if (file.endsWith(".js")) {

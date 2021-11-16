@@ -6,6 +6,9 @@
 
 const fs = require("fs");
 
+// A function that writes to the error logs
+// @param message - The contents to write to the file
+// @return - no return
 module.exports.log = async function (message) {
 
     // Get current log contents and concatenate message to log contents

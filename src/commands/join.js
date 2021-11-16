@@ -34,7 +34,7 @@ module.exports = {
             return await interaction.reply({ embeds: [reply] });
         }
 
-        // Check if there is an existing connection for this server
+        // Check if there is an existing queue for this server
         if (!getVoiceConnection(interaction.guildId)) {
 
             // create a connection

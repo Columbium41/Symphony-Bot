@@ -9,8 +9,6 @@ const { embed } = require("../util/embed");
 const { log } = require("../util/log-error");
 const { createAudioPlayer, NoSubscriberBehavior, createAudioResource, StreamType, AudioPlayerStatus, getVoiceConnection } = require("@discordjs/voice");
 
-const audioPlayer = createAudioPlayer();
-
 // Send a message to a channel everytime a new song plays
 async function sendMessage(song, channel, client) {
 
@@ -23,39 +21,42 @@ async function sendMessage(song, channel, client) {
 function convertURL(song) {
 
     const stream = ytdl(song.url, { filter: "audioonly" });
-    const resource = createAudioResource(stream, { inputType: StreamType.Arbitrary });
-    return resource;
+    return (createAudioResource(stream, { inputType: StreamType.Arbitrary }));
 
 }
 
-module.exports.play = async (client, guildId, channel) => {
+module.exports.play = async (client, guildId) => {
 
-    const currentQueue = client.queues.get(guildId);
+    const queue = client.queues.get(guildId);
     const connection = getVoiceConnection(guildId);
 
     // Check if the queue is empty
-    if (currentQueue.songs.length === 0) {
+    if (queue.songs.length === 0) {
 
         const reply = embed(interaction.client.user, "Queue Finished", ":wave: I'm not playing anything anymore.");
-        return await interaction.reply({ embeds: [reply] });
+        return await queue.channel.send({ embeds: [reply] });
 
     }
 
-    // Create an audio player and subscribe to the connection
-    connection.subscribe(audioPlayer);
-
-    // Convert the song url to an audio resource
-    const resource = convertURL(currentQueue.songs[0]);
+    // Convert the song url and create an audio resource
+    queue.audioPlayer = createAudioPlayer();
+    queue.resource = convertURL(queue.songs[0]);
 
     // Play the song
-    audioPlayer.play(resource);
-    sendMessage(currentQueue.songs[0], channel, client);
+    queue.audioPlayer.play(queue.resource);
+    sendMessage(queue.songs[0], queue.channel, client);
+
+    // subscribe to the connection
+    connection.subscribe(queue.audioPlayer);
 
     // Wait for the song to finish and play the next song
-    audioPlayer.on(AudioPlayerStatus.Idle, () => {
+    queue.audioPlayer.on(AudioPlayerStatus.Idle, () => {
 
-        currentQueue.songs.shift();
-        this.play(client, guildId, channel);
+        // Shift queue and destroy audio player and audio resource
+        queue.songs.shift();
+        queue.resource.destroy();
+        queue.audioPlayer.destroy();
+        this.play(client, guildId, queue.channel);
 
     });
 
