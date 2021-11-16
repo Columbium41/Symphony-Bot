@@ -38,27 +38,40 @@ module.exports = {
             return await interaction.reply({ embeds: [reply] });
         }
 
-        // Shift the song queue and play the next song
-        const skipped = queue.songs.shift();
+        try {
 
-        if (queue.songs.length > 0) {  // There is still a song in the queue
+            // Shift the song queue and play the next song
+            const skipped = queue.songs.shift();
 
-            queue.resource.destroy();
-            queue.audioPlayer.destroy();
-            await play(interaction.client, interaction.guildId);
+            if (queue.songs.length > 0) {  // There is still a song in the queue
 
-            const reply = embed(interaction.client.user, "Skip", `:fast_forward: Successfully skipped ${skipped.title}.`);
+                queue.audioPlayer.stop();
+                await play(interaction.client, interaction.guildId);
+    
+                const reply = embed(interaction.client.user, "Skip", `:fast_forward: Successfully skipped ${skipped.title}.`);
+                return await interaction.reply({ embeds: [reply] });
+    
+            } else {  // Queue is empty
+                
+                // Destroy voice connection and server queue
+                getVoiceConnection(interaction.guildId).destroy();
+                interaction.client.queues.delete(interaction.guildId);
+    
+                const reply = embed(interaction.client.user, "Queue Finished", ":wave: I'm not playing anything anymore.");
+                return await interaction.reply({ embeds: [reply] });
+    
+            }
+
+        }
+
+        catch (error) {
+
+            console.log(error);
+            log("An error occured while trying to skip a song");
+
+            const reply = embed(interaction.client.user, "Error", ":sweat_smile: An error occured while attempting to skip the song.");
             return await interaction.reply({ embeds: [reply] });
-
-        } else {  // Queue is empty
             
-            // Destroy voice connection and server queue
-            getVoiceConnection(interaction.guildId).destroy();
-            interaction.client.queues.delete(interaction.guildId);
-
-            const reply = embed(interaction.client.user, "Queue Finished", ":wave: I'm not playing anything anymore.");
-            return await interaction.reply({ embeds: [reply] });
-
         }
         
     }

@@ -46,7 +46,9 @@ module.exports = {
 
             // Destroy the connection and queue
             connection.destroy();
-            interaction.client.queues.delete(interaction.guildId);
+            if (interaction.client.queues.get(interaction.guildId)) {
+                interaction.client.queues.delete(interaction.guildId);
+            }
 
         } else {
 
