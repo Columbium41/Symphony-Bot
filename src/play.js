@@ -25,8 +25,8 @@ async function sendMessage(queue, client) {
 // @return - no return value
 function convertURL(song) {
 
-    const resource = ytdl(song.url, { filter: "audioonly" });
-    return createAudioResource(resource , { inputType: StreamType.Arbitrary });
+    const stream = ytdl(song.url, { filter: format => {format.codecs === 'opus'; format.container === "webm"}, filter: 'audioonly', highWaterMark:  1 << 25} );
+    return createAudioResource(stream);
 
 }
 
@@ -60,7 +60,7 @@ module.exports.play = async (client, guildId) => {
     // subscribe to the connection
     connection.subscribe(queue.audioPlayer);
 
-    // Catch any errors
+    // Catch any errors/disconnects
     queue.audioPlayer.on('error', error => {
         console.log(`Error: ${error.message} with resource ${queue.resource.metadata}`);
     });
