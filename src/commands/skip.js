@@ -46,7 +46,7 @@ module.exports = {
             if (queue.songs.length > 0) {  // There is still a song in the queue
 
                 queue.audioPlayer.stop();
-                await play(interaction.client, interaction.guildId);
+                await play(interaction.client, interaction.guild);
     
                 const reply = embed(interaction.client.user, "Skip", `:fast_forward: Successfully skipped ${skipped.title}.`);
                 return await interaction.reply({ embeds: [reply] });

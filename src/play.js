@@ -32,13 +32,13 @@ function convertURL(song) {
 
 // A function that plays music
 // @param client - The client object
-// @param guildId - The ID of the guild that has instantiated this function
+// @param guild - The guild that has instantiated this function
 // @return - An embedded message to the channel that instantiated this play function
-module.exports.play = async (client, guildId) => {
+module.exports.play = async (client, guild) => {
     
     // Get the queue and connection
-    const queue = client.queues.get(guildId);
-    const connection = getVoiceConnection(guildId);
+    const queue = client.queues.get(guild.id);
+    const connection = getVoiceConnection(guild.id);
 
     // Check if the queue is empty
     if (queue.songs.length === 0) {
@@ -60,6 +60,11 @@ module.exports.play = async (client, guildId) => {
     // subscribe to the connection
     connection.subscribe(queue.audioPlayer);
 
+    // Look for state changes
+    queue.audioPlayer.on('stateChange', (oldState, newState) => {
+        console.log(`Audio player in ${guild.name} transitioned from ${oldState.status} to ${newState.status}`);
+    });
+
     // Catch any errors/disconnects
     queue.audioPlayer.on('error', error => {
         console.log(`Error: ${error.message} with resource ${queue.resource.metadata}`);
@@ -71,7 +76,7 @@ module.exports.play = async (client, guildId) => {
         // Shift queue and play next song
         queue.songs.shift();
         queue.audioPlayer.stop();
-        this.play(client, guildId);
+        this.play(client, guild.id);
 
     });
 

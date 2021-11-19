@@ -39,7 +39,7 @@ async function addQueue(interaction, song) {
         interaction.client.queues.set(interaction.guildId, queue);
 
         // Play the song (client, guildId, channel)
-        await play(interaction.client, interaction.guildId);
+        await play(interaction.client, interaction.guild);
 
     } else {
 
