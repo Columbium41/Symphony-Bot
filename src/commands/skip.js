@@ -40,10 +40,13 @@ module.exports = {
 
         try {
 
-            // Shift the song queue and play the next song
-            const skipped = queue.songs.shift();
+            // Get the current song for later reference and increase the queue index
+            // Set the current song loop condition to false as a user might've skipped the song because the song was looped
+            const skipped = queue.songs[queue.index];
+            queue.index += 1;
+            queue.loopedCurrent = false;
 
-            if (queue.songs.length > 0) {  // There is still a song in the queue
+            if ( (queue.index < queue.songs.length) || queue.looped) {  // There is still a song in the queue or the queue is looped
 
                 queue.audioPlayer.stop();
                 await play(interaction.client, interaction.guild);
@@ -51,7 +54,9 @@ module.exports = {
                 const reply = embed(interaction.client.user, "Skip", `:fast_forward: Successfully skipped ${skipped.title}.`);
                 return await interaction.reply({ embeds: [reply] });
     
-            } else {  // Queue is empty
+            } 
+
+            else {  // Queue is empty
                 
                 // Destroy voice connection and server queue
                 getVoiceConnection(interaction.guildId).destroy();

@@ -15,7 +15,7 @@ const { createAudioPlayer, NoSubscriberBehavior, createAudioResource, StreamType
 // @return - no return value
 async function sendMessage(queue, client) {
 
-    const message = embed(client.user, "Now Playing", `:musical_note: Now playing ${queue.songs[0].title}`);
+    const message = embed(client.user, "Now Playing", `:musical_note: Now playing ${queue.songs[queue.index].title}`);
     await queue.channel.send( { embeds: [message] } );
 
 }
@@ -23,9 +23,9 @@ async function sendMessage(queue, client) {
 // Convert youtube URLs to audio resources
 // @param song - The song to be converted into an audio resource
 // @return - no return value
-function convertURL(song) {
+async function convertURL(song) {
 
-    const stream = ytdl(song.url, { filter: format => {format.codecs === 'opus'; format.container === "webm"}, filter: 'audioonly', highWaterMark:  1 << 25} );
+    const stream = ytdl( song.url, { filter: format => {format.codecs === 'opus'; format.container === "webm"}, filter: 'audioonly', highWaterMark:  1 << 25} );
     return createAudioResource(stream);
 
 }
@@ -40,18 +40,27 @@ module.exports.play = async (client, guild) => {
     const queue = client.queues.get(guild.id);
     const connection = getVoiceConnection(guild.id);
 
-    // Check if the queue is empty
-    if (queue.songs.length === 0) {
+    // Check if the queue is over
+    if (queue.index >= queue.songs.length) {
 
-        const reply = embed(client.user, "Queue Finished", ":wave: I'm not playing anything anymore.");
-        connection.destroy();
-        return await queue.channel.send({ embeds: [reply] });
+        // If the playlist is looped, go back to the first song in the queue
+        if (queue.looped) {
+
+            queue.index = 0;
+            
+        } else {
+
+            const reply = embed(client.user, "Queue Finished", ":wave: I'm not playing anything anymore.");
+            connection.destroy();
+            return await queue.channel.send({ embeds: [reply] });
+
+        }
 
     }
 
     // Convert the song url and create an audio resource
     queue.audioPlayer = createAudioPlayer();
-    queue.resource = convertURL(queue.songs[0]);
+    queue.resource = await convertURL(queue.songs[queue.index]);
 
     // Play the song
     queue.audioPlayer.play(queue.resource);
@@ -62,21 +71,31 @@ module.exports.play = async (client, guild) => {
 
     // Look for state changes
     queue.audioPlayer.on('stateChange', (oldState, newState) => {
+
         console.log(`Audio player in ${guild.name} transitioned from ${oldState.status} to ${newState.status}`);
+
+        // Song was skipped, wait for next song to buffer
+        if (newState === "autopaused") {
+            console.log("Song was skipped!");
+        }
+
     });
 
     // Catch any errors/disconnects
     queue.audioPlayer.on('error', error => {
-        console.log(`Error: ${error.message} with resource ${queue.resource.metadata}`);
+        console.log(`Error: ${error.message} with resource ${queue.resource}`);
     });
 
-    // Wait for the song to finish and play the next song
+    // Wait for the song to finish
     queue.audioPlayer.on(AudioPlayerStatus.Idle, () => {
 
-        // Shift queue and play next song
-        queue.songs.shift();
+        // Increase the queue index if the current song isn't looped
+        if (!queue.loopedCurrent) {
+            queue.index += 1;
+        }
+
         queue.audioPlayer.stop();
-        this.play(client, guild.id);
+        this.play(client, guild);
 
     });
 
