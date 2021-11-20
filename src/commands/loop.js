@@ -13,12 +13,12 @@ module.exports = {
     // Command Data
     data: new SlashCommandBuilder()
         .setName("loop")
-        .setDescription("loop through a song or the entire playlist")
+        .setDescription("loop through the current song or the entire queue")
         .addStringOption(option => 
             option.setName("options")
                 .setDescription("loop through the entire queue or just the current song?")
                 .setRequired(true)
-                .addChoice("Playlist", "playlist")
+                .addChoice("Queue", "queue")
                 .addChoice("Song", "song"))
         .setDefaultPermission(true),
 
@@ -43,7 +43,7 @@ module.exports = {
         const loopOptions = interaction.options.getString("options", true);
         
         // Loop or unloop the queue
-        if (loopOptions === "playlist") {
+        if (loopOptions === "queue") {
 
             queue.looped = !queue.looped;
 

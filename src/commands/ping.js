@@ -12,7 +12,7 @@ module.exports = {
     // Command Data
     data: new SlashCommandBuilder()
         .setName("ping")
-        .setDescription("Ping the bot!")
+        .setDescription("ping the bot!")
         .setDefaultPermission(true),
 
     // Execute Command

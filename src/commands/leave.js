@@ -14,7 +14,7 @@ module.exports = {
     // Command Data
     data: new SlashCommandBuilder()
         .setName("leave")
-        .setDescription("Make the bot leave the voice channel")
+        .setDescription("make the bot leave the voice channel")
         .setDefaultPermission(true),
 
     // Executre Command

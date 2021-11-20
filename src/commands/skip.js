@@ -15,7 +15,7 @@ module.exports = {
     // Command Data
     data: new SlashCommandBuilder()
         .setName("skip")
-        .setDescription("allows a user to skip a song")
+        .setDescription("skip the current song")
         .setDefaultPermission(true),
 
     // Execute Command

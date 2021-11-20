@@ -74,8 +74,9 @@ module.exports.play = async (client, guild) => {
 
         console.log(`Audio player in ${guild.name} transitioned from ${oldState.status} to ${newState.status}`);
 
-        // Song was skipped, wait for next song to buffer
-        if (newState === "autopaused") {
+        // Song was skipped or bot left channel
+        // wait for next song to buffer if the bot is still in the channel
+        if (newState.status === "autopaused") {
             console.log("Song was skipped!");
         }
 

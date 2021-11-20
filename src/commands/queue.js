@@ -5,52 +5,70 @@
 */
 
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const { embed } = require("../../util/embed");
+const { embed, embedVideo, embedPlaylist } = require("../../util/embed");
 const { log } = require("../../util/log-error");
 const { play } = require("../play");
 const ytdl = require("ytdl-core");
 const ytpl = require("ytpl");
 const yts = require("yt-search");
 
+// Song Constructor
+// @param title - The title of the video
+// @param url - The url of the video
+// @param thumbnail - The thumbnail of the video
+// @param views - The amount of views the video has
+// @param length - The length of the video
+function song(title, url, thumbnail, views, length) {
+
+    this.title = title
+    this.url = url
+    this.thumbnail = thumbnail
+    this.views = views
+    this.length = length
+
+}
+
+// Queue constructor
+// @param songs - A list of songs to be played by the bot
+// @param audioPlayer - The audio player attributed to the bot
+// @param audioResource - The current audio resource being played by the bot
+// @param channel - The channel the queue was instantiated in
+// @param loopedCurrent - A boolean indicating if the current song is looped
+// @param looped - A boolean indicating if the queue is looped
+// @param index - An integer representing the current song being played in the queue (0 - start/first song in queue)
+function queue(songs, audioPlayer, audioResource, channel, loopedCurrent, looped, index) {
+
+    this.songs = songs;
+    this.audioPlayer = audioPlayer;
+    this.audioResource = audioResource;
+    this.channel = channel;
+    this.loopedCurrent = loopedCurrent;
+    this.looped = looped;
+    this.index = index;
+
+}
+
 // A function that converts seconds to duration (hours:minutes:seconds)
 function secondsToDuration(seconds) {
 
     // Return the minutes:seconds if the duration is less than an hour, otherwise, return hours:minutes:seconds
-    return ( (seconds < 3600) ? ( new Date(seconds * 1000).toISOString().substr(14, 5) ) : ( new Date(seconds * 1000).toISOString().substr(11, 8) ) );
+    return ((seconds < 3600) ? (new Date(seconds * 1000).toISOString().substr(14, 5)) : (new Date(seconds * 1000).toISOString().substr(11, 8)));
 
 }
 
 // A function that adds a song to a server queue
 async function addQueue(interaction, song) {
-    
+
     // Check if there is a server queue
     if (!interaction.client.queues.get(interaction.guildId)) {
 
-        // Queue object
-        // @param songs - A list of songs to be played by the bot
-        // @param audioPlayer - The audio player attributed to the bot
-        // @param audioResource - The current audio resource being played by the bot
-        // @param channel - The channel the queue was instantiated in
-        // @param loopedCurrent - A boolean indicating if the current song is looped
-        // @param looped - A boolean indicating if the queue is looped
-        // @param index - An integer representing the current song being played in the queue (0 - start/first song in queue)
-        const queue = {
-
-            songs: [],
-            audioPlayer: null,
-            audioResource: null,
-            channel: interaction.channel,
-            loopedCurrent: false,
-            looped: false,
-            index: 0
-
-        }
+        const guildQueue = new queue([], null, null, interaction.channel, false, false, 0);
 
         // Add song to queue
-        queue.songs.push(song);
+        guildQueue.songs.push(song);
 
         // Add queue to map
-        interaction.client.queues.set(interaction.guildId, queue);
+        interaction.client.queues.set(interaction.guildId, guildQueue);
 
         // Play the song (client, guildId, channel)
         await play(interaction.client, interaction.guild);
@@ -68,7 +86,7 @@ module.exports = {
     // Command Data
     data: new SlashCommandBuilder()
         .setName("queue")
-        .setDescription("Queue a song for the bot to play!")
+        .setDescription("queue a song for the bot to play!")
         .addStringOption(option =>
             option.setName("song")
                 .setDescription("the song to play")
@@ -94,67 +112,75 @@ module.exports = {
 
         const songArg = interaction.options.getString("song", true);
 
-        // Song object
-        // @param title - the title of the song
-        // @param url - the url of the song to be played
-        // @param thumbnail - the thumbnail of the youtube video
-        // @param views - the amount of views the video has
-        // @param length - the length of the song
-        const song = {
-
-            title: null,
-            url: null,
-            thumbnail: null,
-            views: null,
-            length: null
-
-        }
-
         // Attempt to get song information
         try {
 
             // Find if the song argument is a youtube playlist, video url, or set of keywords
 
             // Playlist
-            if (ytpl.validateID(songArg)) { 
-                
-                const songs = (await ytpl(songArg)).items;
-                
+            if (ytpl.validateID(songArg)) {
+
+                const playlist = (await ytpl(songArg));
+                const songs = playlist.items;
+
+                //playlistTitle = playlist.title;
+                //playlistViews = playlist.views;
+
                 // Loop through songs and add them to the queue
                 for (const index of songs) {
 
                     //console.log(index);
 
-                    song.title = index.title;
-                    song.url = index.url;
+                    title = index.title;
+                    url = index.url;
+                    thumbnail = index.bestThumbnail.url;
+                    views = null;
+                    length = secondsToDuration(index.durationSec);
 
-                    await addQueue(interaction, song);
+                    // Song isn't available
+                    if (title === null) {
+                        reply = embed(interaction.member.user, "Queue", `:x: Couldn't queue the song/playlist. Make sure the link is public.`);
+                        return await interaction.reply({ embeds: [reply] });
+                    }
+
+                    const currentSong = new song(title, url, thumbnail, views, length);
+                    await addQueue(interaction, currentSong);
 
                 }
 
-                reply = embed(interaction.member.user, "Queue", `:white_check_mark: Queued ${songs.length} songs`);
-                return await interaction.reply( { embeds: [reply] } );
+                reply = embedPlaylist(interaction.member.user, "Queue", `:white_check_mark: Queued ${playlist.title} playlist.`, playlist);
+                return await interaction.reply({ embeds: [reply] });
 
             }
 
             // Video url
-            else if (ytdl.validateURL(songArg)) {  
+            else if (ytdl.validateURL(songArg)) {
 
                 const songInfo = await (await ytdl.getBasicInfo(songArg)).videoDetails;
                 //console.log(songInfo);
 
-                song.title = songInfo.title;
-                song.url = songInfo.video_url;
-                song.thumbnail = songInfo.thumbnails[0].url;
-                song.views = parseInt(songInfo.viewCount);
-                song.length = secondsToDuration(songInfo.lengthSeconds);
+                title = songInfo.title;
+                url = songInfo.video_url;
+                thumbnail = songInfo.thumbnails[0].url;
+                views = parseInt(songInfo.viewCount);
+                length = secondsToDuration(songInfo.lengthSeconds);
 
-                await addQueue(interaction, song);
+                // Song isn't available
+                if (title === null) {
+                    reply = embed(interaction.member.user, "Queue", `:x: Couldn't queue the song/playlist. Make sure the link is public.`);
+                    return await interaction.reply({ embeds: [reply] });
+                }
+
+                const currentSong = new song(title, url, thumbnail, views, length);
+                await addQueue(interaction, currentSong);
+
+                reply = embedVideo(interaction.member.user, "Queue", `:white_check_mark: Successfully queued ${currentSong.title}`, currentSong);
+                return await interaction.reply({ embeds: [reply] });
 
             }
 
             // Set of keywords
-            else {  
+            else {
 
                 // get the first video result
                 const videoFinder = async (query) => {
@@ -170,13 +196,23 @@ module.exports = {
 
                     //console.log(video); 
 
-                    song.title = video.title;
-                    song.url = video.url;
-                    song.thumbnail = video.thumbnail;
-                    song.views = video.views;
-                    song.length = secondsToDuration(video.seconds);
+                    title = video.title;
+                    url = video.url;
+                    thumbnail = video.thumbnail;
+                    views = video.views;
+                    length = secondsToDuration(video.seconds);
 
-                    await addQueue(interaction, song);
+                    // Song isn't available
+                    if (title === null) {
+                        reply = embed(interaction.member.user, "Queue", `:x: Couldn't queue the song/playlist. Make sure the link is public.`);
+                        return await interaction.reply({ embeds: [reply] });
+                    }
+
+                    currentSong = new song(title, url, thumbnail, views, length);
+                    await addQueue(interaction, currentSong);
+
+                    reply = embedVideo(interaction.member.user, "Queue", `:white_check_mark: Successfully queued ${currentSong.title}`, currentSong);
+                    return await interaction.reply({ embeds: [reply] });
 
                 }
 
@@ -190,8 +226,8 @@ module.exports = {
 
             }
 
-        } 
-        
+        }
+
         // Error occured while trying to gather song information
         catch (error) {
 
@@ -199,38 +235,6 @@ module.exports = {
             log(error);
 
         }
-
-        // Song isn't available
-        if (song.title === null) {
-            reply = embed(interaction.member.user, "Queue", `:x: Couldn't queue the song/playlist. Make sure the video/playlist is available and public.`);
-            return await interaction.reply({ embeds: [reply] });
-        }
-
-        reply = embed(interaction.member.user, "Queue", `:white_check_mark: Successfully queued ${song.title}`);
-        reply.thumbnail = {url: song.thumbnail};
-        reply.fields = [
-
-            // Link
-            {
-                name: "Link",
-                value: song.url
-            },
-            // Views
-            {
-                name: "views",
-                value: song.views.toString(),
-                inline: true
-            },
-            // Length
-            {
-                name: "length",
-                value: song.length,
-                inline: true
-            }
-
-        ];
-
-        return await interaction.reply({ embeds: [reply] });
 
     }
 

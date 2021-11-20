@@ -14,7 +14,7 @@ module.exports = {
     // Command Data
     data: new SlashCommandBuilder()
         .setName("join")
-        .setDescription("Make the bot join a voice channel")
+        .setDescription("make the bot join a voice channel")
         .setDefaultPermission(true),
 
     // Execute Command
