@@ -10,12 +10,13 @@ const { log } = require("../util/log-error");
 const { createAudioPlayer, NoSubscriberBehavior, createAudioResource, StreamType, AudioPlayerStatus, getVoiceConnection } = require("@discordjs/voice");
 
 // Send a message to a channel everytime a new song plays
-// @param queue - The queue attributed to the server
+// @param song - The song that is currently playing
 // @param client - The client object
 // @return - no return value
 async function sendMessage(queue, client) {
 
     const message = embed(client.user, "Now Playing", `:musical_note: Now playing ${queue.songs[queue.index].title}`);
+    message.thumbnail = { url: queue.songs[queue.index].thumbnail };
     await queue.channel.send( { embeds: [message] } );
 
 }
@@ -72,7 +73,7 @@ module.exports.play = async (client, guild) => {
     // Look for state changes
     queue.audioPlayer.on('stateChange', (oldState, newState) => {
 
-        console.log(`Audio player in ${guild.name} transitioned from ${oldState.status} to ${newState.status}`);
+        //console.log(`Audio player in ${guild.name} transitioned from ${oldState.status} to ${newState.status}`);
 
         // Song was skipped or bot left channel
         // wait for next song to buffer if the bot is still in the channel

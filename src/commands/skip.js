@@ -15,7 +15,7 @@ module.exports = {
     // Command Data
     data: new SlashCommandBuilder()
         .setName("skip")
-        .setDescription("skip the current song")
+        .setDescription("skip the current song or multiple songs")
         .setDefaultPermission(true),
 
     // Execute Command
@@ -46,26 +46,12 @@ module.exports = {
             queue.index += 1;
             queue.loopedCurrent = false;
 
-            if ( (queue.index < queue.songs.length) || queue.looped) {  // There is still a song in the queue or the queue is looped
-
-                queue.audioPlayer.stop();
-                await play(interaction.client, interaction.guild);
+            queue.audioPlayer.stop();
+            await play(interaction.client, interaction.guild);
     
-                const reply = embed(interaction.client.user, "Skip", `:fast_forward: Successfully skipped ${skipped.title}.`);
-                return await interaction.reply({ embeds: [reply] });
-    
-            } 
-
-            else {  // Queue is empty
-                
-                // Destroy voice connection and server queue
-                getVoiceConnection(interaction.guildId).destroy();
-                interaction.client.queues.delete(interaction.guildId);
-    
-                const reply = embed(interaction.client.user, "Queue Finished", ":wave: I'm not playing anything anymore.");
-                return await interaction.reply({ embeds: [reply] });
-    
-            }
+            const reply = embed(interaction.client.user, "Skip", `:fast_forward: Successfully skipped ${skipped.title}.`);
+            reply.thumbnail = { url: skipped.thumbnail };
+            return await interaction.reply({ embeds: [reply] });
 
         }
 

@@ -23,19 +23,32 @@ module.exports = {
         const queue = interaction.client.queues.get(interaction.guildId);
         let songNames = "";
 
+        // Get the current song playing as well as the next 4 songs
         if (queue && queue.songs !== null) {
-            
-            let count = 1;
 
-            // Get all song titles
-            for (const song of queue.songs) {
-                songNames += `${count}: ${song.title}\n`;
-                count += 1;
+            // Add "..." to indicate that there are more songs previous to the song playing in the list shown
+            if (queue.index > 0) {
+                songNames += "...\n";
+            }
 
+            // Add the current song to the list
+            songNames += `**>> ${queue.index + 1}: ${queue.songs[queue.index].title}**\n`;
+
+            // Get the next 4 songs
+            count = 0;
+            for (let i = queue.index + 1; (i < queue.songs.length && count < 4); i++) {
+                songNames += `${i + 1}: ${queue.songs[i].title}\n`;
+                count++;
+            }
+
+            // Add "..." to indicate that there are more songs after the list shown
+            if (queue.index + 5 < queue.songs.length) {
+                songNames += "...";
             }
 
         }
 
+        // Reply embed
         const reply = {
             
             color: process.env.EMBED_COLOR,
@@ -45,6 +58,12 @@ module.exports = {
                 icon_url: interaction.member.user.avatarURL(),
             },
             fields: [
+
+                // Queue list (only shows 5 items)
+                {
+                    name: "Songs Playing",
+                    value: ( (queue && queue.songs !== null) ? (songNames) : ("N/A") )
+                },
 
                 // Queue size
                 {
@@ -75,7 +94,7 @@ module.exports = {
                 // The channel the bot is in
                 {
                     name: "Channel",
-                    value: ( (queue) ? (queue.channel.name) : ("N/A") ),
+                    value: ( (interaction.guild.me.voice.channel) ? (interaction.guild.me.voice.channel.name) : ("N/A") ),
                     inline: true
                 },
 
@@ -87,7 +106,6 @@ module.exports = {
                 }
 
             ],
-            description: ( (queue && queue.songs !== null) ? (songNames) : ("N/A") ),
             timestamp: new Date(),
 
         };
