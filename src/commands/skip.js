@@ -8,7 +8,6 @@ const { SlashCommandBuilder } = require("@discordjs/builders");
 const { play } = require("../play");
 const { embed } = require("../../util/embed");
 const { log } = require("../../util/log-error");
-const { getVoiceConnection } = require("@discordjs/voice");
 
 module.exports = {
 
@@ -29,11 +28,11 @@ module.exports = {
             reply = embed(interaction.member.user, "Skip", ":x: I'm currently not in a voice channel.");
             return await interaction.reply({ embeds: [reply] });
         }
-        if (userVC !== botVC) {
+        else if (userVC !== botVC) {
             reply = embed(interaction.member.user, "Skip", ":x: You must be in the same voice channel as me to use this command.");
             return await interaction.reply({ embeds: [reply] });
         }
-        if (!queue || queue.songs.length === 0) {
+        else if (!queue || queue.songs.length === 0) {
             reply = embed(interaction.member.user, "Skip", ":x: There are no songs in the queue to skip.");
             return await interaction.reply({ embeds: [reply] });
         }

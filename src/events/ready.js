@@ -9,6 +9,15 @@ const { generateDependencyReport } = require('@discordjs/voice');
 module.exports = async (client) => {
 
     //await console.log(generateDependencyReport());
-    await console.log(`${client.user.username} has successfully logged in!`);
+
+    // Show every server the client is running on
+    console.log("List of guilds:");
+    client.guilds.cache.forEach(guild => {
+
+        console.log(`${guild.name}`);
+
+    })
+
+    await console.log(`\n${client.user.username} has successfully logged in!`);
 
 }
