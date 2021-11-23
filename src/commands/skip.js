@@ -8,6 +8,7 @@ const { SlashCommandBuilder } = require("@discordjs/builders");
 const { play } = require("../play");
 const { embed } = require("../../util/embed");
 const { log } = require("../../util/log-error");
+const { getVoiceConnection } = require("@discordjs/voice");
 
 module.exports = {
 
@@ -15,6 +16,11 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName("skip")
         .setDescription("skip the current song or multiple songs")
+        .addStringOption(option => 
+            option.setName("remove")
+            .setDescription("remove the current song from the queue")
+            .setRequired(false)
+            .addChoice("Yes", "yes"))
         .setDefaultPermission(true),
 
     // Execute Command
@@ -39,16 +45,46 @@ module.exports = {
 
         try {
 
-            // Get the current song for later reference and increase the queue index
-            // Set the current song loop condition to false as a user might've skipped the song because the song was looped
-            const skipped = queue.songs[queue.index];
-            queue.index += 1;
-            queue.loopedCurrent = false;
+            // Get the user's option to remove the song
+            const remove = interaction.options.getString("remove");
 
-            queue.audioPlayer.stop();
-            await play(interaction.client, interaction.guild);
+            // Get the current song the user is trying to skip/remove
+            const skipped = queue.songs[queue.index];
+            let reply = null;
+            
+            if (remove !== null) {
+
+                // Remove the current song
+                queue.songs.splice(queue.index, 1);
+
+                queue.audioPlayer.stop();
+                
+                if (queue.songs.length > 0) {
+
+                    await play(interaction.client, interaction.guild);
+                    reply = embed(interaction.client.user, "Skip", `:fast_forward: Successfully removed ${skipped.title}.`);
+
+                } else {
+
+                    reply = embed(interaction.client.user, "Skip", `:fast_forward: Successfully removed ${skipped.title}\n:wave: I'm no longer playing anything.`);
+                    getVoiceConnection(interaction.guildId).destroy();
+                    interaction.client.queues.delete(interaction.guildId);
+
+                }
+
+            } else {
+
+                // Increase the queue index
+                queue.index += 1;
+
+                queue.audioPlayer.stop();
+                await play(interaction.client, interaction.guild);
     
-            const reply = embed(interaction.client.user, "Skip", `:fast_forward: Successfully skipped ${skipped.title}.`);
+                reply = embed(interaction.client.user, "Skip", `:fast_forward: Successfully skipped ${skipped.title}.`);
+
+            }
+
+            queue.loopedCurrent = false;
             reply.thumbnail = { url: skipped.thumbnail };
             return await interaction.reply({ embeds: [reply] });
 

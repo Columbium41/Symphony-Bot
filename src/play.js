@@ -26,7 +26,7 @@ async function sendMessage(queue, client) {
 // @return - no return value
 async function convertURL(song) {
 
-    const stream = ytdl( song.url, { filter: format => {format.codecs === 'opus'; format.container === "webm"}, filter: 'audioonly', highWaterMark:  1 << 25} );
+    const stream = ytdl( song.url, { filter: format => {format.codecs === 'opus'; format.container === "webm" }, filter: 'audioonly', highWaterMark:  1 << 25} );
     return createAudioResource(stream);
 
 }
@@ -52,6 +52,7 @@ module.exports.play = async (client, guild) => {
         } else {
 
             const reply = embed(client.user, "Queue Finished", ":wave: I'm not playing anything anymore.");
+            client.queues.delete(guild.id);
             connection.destroy();
             return await queue.channel.send({ embeds: [reply] });
 
@@ -60,7 +61,11 @@ module.exports.play = async (client, guild) => {
     }
 
     // Convert the song url and create an audio resource
-    queue.audioPlayer = createAudioPlayer();
+    queue.audioPlayer = createAudioPlayer({
+        behaviors: {
+            noSubscriber: NoSubscriberBehavior.Pause,
+        },
+    });
     queue.resource = await convertURL(queue.songs[queue.index]);
 
     // Play the song
@@ -84,8 +89,12 @@ module.exports.play = async (client, guild) => {
     });
 
     // Catch any errors/disconnects
-    queue.audioPlayer.on('error', error => {
-        console.log(`Error: ${error.message} with resource ${queue.resource}`);
+    queue.audioPlayer.on('error', async error => {
+
+        console.log(`Error: ${error.message} with resource ${queue.resource.metadata}`);
+        const message = embed(client.user, "Error Playing", `:question: An error occured when trying to play ${queue.songs[queue.index].title}.\nSkipping to the next song...`);
+        await queue.channel.send( { embeds: [message] } );
+
     });
 
     // Wait for the song to finish
