@@ -42,7 +42,6 @@ module.exports = {
                 count++;
             }
 
-            // Add the current song to the list
             songNames += `**>> ${queue.index + 1}: ${queue.songs[queue.index].title}**\n`;
 
             // Get the next 5 songs

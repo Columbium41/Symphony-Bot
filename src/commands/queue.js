@@ -8,6 +8,7 @@ const { SlashCommandBuilder } = require("@discordjs/builders");
 const { embed, embedVideo, embedPlaylist } = require("../../util/embed");
 const { log } = require("../../util/log-error");
 const { play } = require("../play");
+const { secondsToDuration } = require("../../util/functions");
 const ytdl = require("ytdl-core");
 const ytpl = require("ytpl");
 const yts = require("yt-search");
@@ -45,14 +46,6 @@ function queue(songs, audioPlayer, audioResource, channel, loopedCurrent, looped
     this.loopedCurrent = loopedCurrent;
     this.looped = looped;
     this.index = index;
-
-}
-
-// A function that converts seconds to duration (hours:minutes:seconds)
-function secondsToDuration(seconds) {
-
-    // Return the minutes:seconds if the duration is less than an hour, otherwise, return hours:minutes:seconds
-    return ((seconds < 3600) ? (new Date(seconds * 1000).toISOString().substr(14, 5)) : (new Date(seconds * 1000).toISOString().substr(11, 8)));
 
 }
 

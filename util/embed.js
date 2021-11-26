@@ -63,7 +63,7 @@ module.exports.embedVideo = function(user, title, description, song) {
             },
             // Length
             {
-                name: "length",
+                name: "duration",
                 value: song.length,
                 inline: true
             }

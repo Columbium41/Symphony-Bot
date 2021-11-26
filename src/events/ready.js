@@ -18,6 +18,15 @@ module.exports = async (client) => {
 
     })
 
+    // Update the bot's status
+    const numServers = client.guilds.cache.size;
+
+    if (numServers > 1) {
+        client.user.setActivity(`/queue | ${numServers} servers`, { type: "LISTENING" });
+    } else {
+        client.user.setActivity(`/queue | ${numServers} server`, { type: "LISTENING" });
+    }
+
     await console.log(`\n${client.user.username} has successfully logged in!`);
 
 }
