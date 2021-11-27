@@ -50,14 +50,13 @@ module.exports = {
 
             // Get the current song the user is trying to skip/remove
             const skipped = queue.songs[queue.index];
+            queue.audioPlayer.stop();
             let reply = null;
             
             if (remove !== null) {
 
                 // Remove the current song
                 queue.songs.splice(queue.index, 1);
-
-                queue.audioPlayer.stop();
                 
                 if (queue.songs.length > 0) {
 
@@ -77,7 +76,6 @@ module.exports = {
                 // Increase the queue index
                 queue.index += 1;
 
-                queue.audioPlayer.stop();
                 await play(interaction.client, interaction.guild);
     
                 reply = embed(interaction.client.user, "Skip", `:fast_forward: Successfully skipped ${skipped.title}.`);

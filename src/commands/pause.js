@@ -29,11 +29,11 @@ module.exports = {
             reply = embed(interaction.member.user, "Pause", ":x: I'm currently not in a voice channel.");
             return await interaction.reply({ embeds: [reply] });
         }
-        if (userVC !== botVC) {
+        else if (userVC !== botVC) {
             reply = embed(interaction.member.user, "Pause", ":x: You must be in the same voice channel as me to use this command.");
             return await interaction.reply({ embeds: [reply] });
         }
-        if (!queue || queue.songs.length === 0) {
+        else if (!queue || queue.songs.length === 0) {
             reply = embed(interaction.member.user, "Pause", ":x: I'm currently not playing anything.");
             return await interaction.reply({ embeds: [reply] });
         }

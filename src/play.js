@@ -4,10 +4,12 @@
  * A file that handles playing music
 */
 
+const dotenv = require("dotenv");
+dotenv.config();
 const ytdl = require("ytdl-core");
 const { embed } = require("../util/embed");
 const { log } = require("../util/log-error");
-const { createAudioPlayer, NoSubscriberBehavior, createAudioResource, StreamType, AudioPlayerStatus, getVoiceConnection } = require("@discordjs/voice");
+const { createAudioPlayer, NoSubscriberBehavior, createAudioResource, AudioPlayerStatus, getVoiceConnection } = require("@discordjs/voice");
 
 // Send a message to a channel everytime a new song plays
 // @param song - The song that is currently playing
@@ -17,7 +19,7 @@ async function sendMessage(queue, client) {
 
     const message = embed(client.user, "Now Playing", `:musical_note: Now playing ${queue.songs[queue.index].title}`);
     message.thumbnail = { url: queue.songs[queue.index].thumbnail };
-    await queue.channel.send( { embeds: [message] } );
+    await queue.channel.send({ embeds: [message] });
 
 }
 
@@ -26,7 +28,7 @@ async function sendMessage(queue, client) {
 // @return - no return value
 async function convertURL(song) {
 
-    const stream = ytdl( song.url, { filter: format => {format.codecs === 'opus'; format.container === "webm" }, filter: 'audioonly', highWaterMark:  1 << 25} );
+    const stream = ytdl(song.url, { filter: format => { format.codecs === 'opus'; format.container === "webm" }, filter: 'audioonly', highWaterMark: 1 << 25 });
     return createAudioResource(stream);
 
 }
@@ -36,7 +38,7 @@ async function convertURL(song) {
 // @param guild - The guild that has instantiated this function
 // @return - An embedded message to the channel that instantiated this play function
 module.exports.play = async (client, guild) => {
-    
+
     // Get the queue and connection
     const queue = client.queues.get(guild.id);
     const connection = getVoiceConnection(guild.id);
@@ -48,13 +50,16 @@ module.exports.play = async (client, guild) => {
         if (queue.looped) {
 
             queue.index = 0;
-            
-        } else {
 
-            const reply = embed(client.user, "Queue Finished", ":wave: I'm not playing anything anymore.");
+        }
+
+        // Leave the channel
+        else {
+
             client.queues.delete(guild.id);
             connection.destroy();
-            return await queue.channel.send({ embeds: [reply] });
+            const reply = embed(client.user, "Queue Finished", ":wave: I'm not playing anything anymore.");
+            await queue.channel.send({ embeds: [reply] });
 
         }
 
@@ -75,25 +80,12 @@ module.exports.play = async (client, guild) => {
     // subscribe to the connection
     connection.subscribe(queue.audioPlayer);
 
-    // Look for state changes
-    queue.audioPlayer.on('stateChange', (oldState, newState) => {
-
-        //console.log(`Audio player in ${guild.name} transitioned from ${oldState.status} to ${newState.status}`);
-
-        // Song was skipped or bot left channel
-        // wait for next song to buffer if the bot is still in the channel
-        if (newState.status === "autopaused") {
-            console.log("Song was skipped!");
-        }
-
-    });
-
     // Catch any errors/disconnects
     queue.audioPlayer.on('error', async error => {
 
         console.log(`Error: ${error.message} with resource ${queue.resource.metadata}`);
-        const message = embed(client.user, "Error Playing", `:question: An error occured when trying to play ${queue.songs[queue.index].title}.\nSkipping to the next song...`);
-        await queue.channel.send( { embeds: [message] } );
+        const message = embed(client.user, "Error Playing", `:question: An error occured when trying to play ${queue.songs[queue.index].title}.\nAttempting to skip to the next song...`);
+        await queue.channel.send({ embeds: [message] });
 
     });
 

@@ -116,9 +116,6 @@ module.exports = {
                 const playlist = (await ytpl(songArg));
                 const songs = playlist.items;
 
-                //playlistTitle = playlist.title;
-                //playlistViews = playlist.views;
-
                 // Loop through songs and add them to the queue
                 for (const index of songs) {
 

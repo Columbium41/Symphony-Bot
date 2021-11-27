@@ -6,6 +6,7 @@
 
 const dotenv = require("dotenv");
 dotenv.config();
+const numberFormat = new Intl.NumberFormat();
 
 // A function that embeds messages with a title and description
 // @param user - The user that the embed should contain
@@ -58,7 +59,7 @@ module.exports.embedVideo = function(user, title, description, song) {
             // Views
             {
                 name: "views",
-                value: song.views.toString(),
+                value: (numberFormat.format(song.views)),
                 inline: true
             },
             // Length
@@ -100,7 +101,7 @@ module.exports.embedPlaylist = function(user, title, description, playlist) {
             // Views
             {
                 name: "views",
-                value: playlist.views.toString(),
+                value: (numberFormat.format(playlist.views)),
                 inline: true
             },
             // Song count
