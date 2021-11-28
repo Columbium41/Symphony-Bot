@@ -61,11 +61,11 @@ module.exports = {
                 if (queue.songs.length > 0) {
 
                     await play(interaction.client, interaction.guild);
-                    reply = embed(interaction.client.user, "Skip", `:fast_forward: Successfully removed ${skipped.title}.`);
+                    reply = embed(interaction.client.user, "Skip", `:fast_forward: Removed ${skipped.title}.`);
 
                 } else {
 
-                    reply = embed(interaction.client.user, "Skip", `:fast_forward: Successfully removed ${skipped.title}\n:wave: I'm no longer playing anything.`);
+                    reply = embed(interaction.client.user, "Skip", `:fast_forward: Removed ${skipped.title}\n:wave: I'm no longer playing anything.`);
                     getVoiceConnection(interaction.guildId).destroy();
                     interaction.client.queues.delete(interaction.guildId);
 
@@ -78,7 +78,7 @@ module.exports = {
 
                 await play(interaction.client, interaction.guild);
     
-                reply = embed(interaction.client.user, "Skip", `:fast_forward: Successfully skipped ${skipped.title}.`);
+                reply = embed(interaction.client.user, "Skip", `:fast_forward: Skipped ${skipped.title}.`);
 
             }
 

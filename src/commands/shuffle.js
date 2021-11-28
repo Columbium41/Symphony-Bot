@@ -61,7 +61,7 @@ module.exports = {
 
             }
 
-            reply = embed(interaction.member.user, "Shuffle", ":twisted_rightwards_arrows: Successfully shuffled the queue.");
+            reply = embed(interaction.member.user, "Shuffle", ":twisted_rightwards_arrows: Shuffled the queue.");
             return await interaction.reply({ embeds: [reply] });
 
         } catch (error) {

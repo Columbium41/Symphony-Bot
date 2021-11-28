@@ -41,7 +41,7 @@ module.exports = {
             // Send a message once the bot's connection has been destroyed
             connection.on(VoiceConnectionStatus.Destroyed, async () => {
 
-                reply = embed(interaction.member.user, "Leave", `:wave: Successfully left ${userVC.name}.`);
+                reply = embed(interaction.member.user, "Leave", `:wave: Left ${userVC.name}.`);
                 await interaction.reply({ embeds: [reply] });
                 
             });

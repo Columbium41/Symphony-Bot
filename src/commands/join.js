@@ -30,7 +30,7 @@ module.exports = {
             return await interaction.reply({ embeds: [reply] });
         }
         if (userVC === null) {
-            reply = embed(interaction.member.user, "Join", ":x: You must join a voice channel to use this command.");
+            reply = embed(interaction.member.user, "Join", ":x: You must be in a voice channel to use this command.");
             return await interaction.reply({ embeds: [reply] });
         }
 
@@ -47,7 +47,7 @@ module.exports = {
             // Send a message once the voice connection has been established
             connection.on(VoiceConnectionStatus.Ready, async () => {
 
-                reply = embed(interaction.member.user, "Join", `:speaker: Successfully joined ${userVC.name}.`);
+                reply = embed(interaction.member.user, "Join", `:speaker: Joined ${userVC.name}.`);
                 return await interaction.reply({ embeds: [reply] });
 
             });

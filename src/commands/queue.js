@@ -129,7 +129,7 @@ module.exports = {
 
                     // Song isn't available
                     if (title === null) {
-                        reply = embed(interaction.member.user, "Queue", `:x: Couldn't queue the song/playlist. Make sure the link is public.`);
+                        reply = embed(interaction.member.user, "Queue", `:x: Couldn't queue the playlist. Make sure the link is public.`);
                         return await interaction.reply({ embeds: [reply] });
                     }
 
@@ -157,14 +157,14 @@ module.exports = {
 
                 // Song isn't available
                 if (title === null) {
-                    reply = embed(interaction.member.user, "Queue", `:x: Couldn't queue the song/playlist. Make sure the link is public.`);
+                    reply = embed(interaction.member.user, "Queue", `:x: Couldn't queue the song. Make sure the link is public.`);
                     return await interaction.reply({ embeds: [reply] });
                 }
 
                 const currentSong = new song(title, url, thumbnail, views, length);
                 await addQueue(interaction, currentSong);
 
-                reply = embedVideo(interaction.member.user, "Queue", `:white_check_mark: Successfully queued ${currentSong.title}`, currentSong);
+                reply = embedVideo(interaction.member.user, "Queue", `:white_check_mark: Queued ${currentSong.title}`, currentSong);
                 return await interaction.reply({ embeds: [reply] });
 
             }
@@ -194,14 +194,14 @@ module.exports = {
 
                     // Song isn't available
                     if (title === null) {
-                        reply = embed(interaction.member.user, "Queue", `:x: Couldn't queue the song/playlist. Make sure the link is public.`);
+                        reply = embed(interaction.member.user, "Queue", `:x: Couldn't queue the song. Make sure the song is public.`);
                         return await interaction.reply({ embeds: [reply] });
                     }
 
                     currentSong = new song(title, url, thumbnail, views, length);
                     await addQueue(interaction, currentSong);
 
-                    reply = embedVideo(interaction.member.user, "Queue", `:white_check_mark: Successfully queued ${currentSong.title}`, currentSong);
+                    reply = embedVideo(interaction.member.user, "Queue", `:white_check_mark: Queued ${currentSong.title}`, currentSong);
                     return await interaction.reply({ embeds: [reply] });
 
                 }
