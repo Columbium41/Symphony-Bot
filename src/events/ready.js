@@ -8,7 +8,7 @@ const { generateDependencyReport } = require('@discordjs/voice');
 
 module.exports = async (client) => {
 
-    //await console.log(generateDependencyReport());
+    await console.log(generateDependencyReport());
 
     // Show every server the client is running on
     console.log("List of guilds:");
@@ -20,7 +20,6 @@ module.exports = async (client) => {
 
     // Update the bot's status
     const numServers = client.guilds.cache.size;
-
     if (numServers > 1) {
         client.user.setActivity(`/ping | ${numServers} servers`, { type: "LISTENING" });
     } else {

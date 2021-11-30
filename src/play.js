@@ -23,12 +23,26 @@ async function sendMessage(queue, client) {
 
 }
 
+// Convert youtube URLs to audio resources with inline volume
+// @param song - The song to be converted into an audio resource
+// @returns - An audio resource with inline volume
+async function createResourceInline(song) {
+
+    // Create an audio stream
+    const stream = ytdl(song.url, { filter: 'audioonly' });
+    const resource = createAudioResource(stream, { inlineVolume: true });
+    resource.volume.setVolume(0.05);
+    return resource;
+
+}
+
 // Convert youtube URLs to audio resources
 // @param song - The song to be converted into an audio resource
-// @return - no return value
-async function convertURL(song) {
+// @returns - An audio resource
+async function createResource(song) {
 
-    const stream = ytdl(song.url, { filter: format => { format.codecs === 'opus'; format.container === "webm" }, filter: 'audioonly', highWaterMark: 1 << 25 });
+    // Create an audio stream
+    const stream = ytdl(song.url, { filter: 'audioonly' });
     return createAudioResource(stream);
 
 }
@@ -71,7 +85,20 @@ module.exports.play = async (client, guild) => {
             noSubscriber: NoSubscriberBehavior.Pause,
         },
     });
-    queue.resource = await convertURL(queue.songs[queue.index]);
+    queue.resource = await createResourceInline(queue.songs[queue.index]);
+
+    /*
+    if (queue.resource.edges) {
+        console.log(queue.resource.edges);
+    }
+    else {
+        console.log("no edges");
+    }
+    if (queue.resource.encoder) {
+        console.log(queue.resource.encoder);
+    } else {
+        console.log("no encoder");
+    }*/
 
     // Play the song
     queue.audioPlayer.play(queue.resource);
