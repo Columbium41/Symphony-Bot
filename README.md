@@ -15,20 +15,20 @@ This bot was written as a substitution for other discord music bots that have be
 - Javascript syntax
 - Node.js and how to build a Node.js project
 - Basics of Git and version control
-- Using Environment Variables using dotenv
+- Using Environment Variables with dotenv
 - Reading documentation and understanding class structure
 - Finding errors and fixing them using an error logging system
 
 ## Node Dependencies
-- discord.js
-- @discord.js/builders
-- @discord.js/rest
-- @discord.js/voice
-- discord-api-types
-- dotenv
-- ffmpeg-static
-- libsodium-wrappers
-- opusscript
-- yt-search
-- ytdl-core
-- ytpl
+- [dotenv](https://www.npmjs.com/package/dotenv) - Loads environment variables from .env files
+- [discord.js](https://www.npmjs.com/package/discord.js) - Node.js module for interacting with Discord API
+- [@discord.js/builders](https://www.npmjs.com/package/@discordjs/builders) - Slash command builder
+- [@discord.js/rest](https://www.npmjs.com/package/@discordjs/rest) - REST API for discord.js
+- [@discord.js/voice](https://www.npmjs.com/package/@discordjs/voice) - Node.js implementation of Discord Voice API
+- [discord-api-types](https://www.npmjs.com/package/discord-api-types) - Type definitions for the Discord API
+- [ffmpeg-static](https://www.npmjs.com/package/ffmpeg-static) - FFmpeg static binaries
+- [libsodium-wrappers](https://www.npmjs.com/package/libsodium-wrappers) - Encrypts audio
+- [opusscript](https://www.npmjs.com/package/opusscript) - Encodes audio
+- [yt-search](https://www.npmjs.com/package/yt-search) - A youtube search API
+- [ytdl-core](https://www.npmjs.com/package/ytdl-core) - A youtube downloading module
+- [ytpl](https://www.npmjs.com/package/ytpl) - Resolves youtube playlists
