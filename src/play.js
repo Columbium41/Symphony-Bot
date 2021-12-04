@@ -28,8 +28,11 @@ async function sendMessage(queue, client) {
 // @returns - An audio resource with inline volume
 async function createResourceInline(song) {
 
-    // Create an audio stream
-    const stream = ytdl(song.url, { filter: format => {format.codecs === "opus"; format.container === "webm"}, filter: 'audioonly', highWaterMark: 1 << 25 });
+    // Create an audio stream, check if the song url exists, otherwise throw an error
+    if (!song.url) {
+        return null;
+    }
+    const stream = ytdl(song.url, { filter: format => { format.codecs === "opus"; format.container === "webm" }, filter: 'audioonly', highWaterMark: 1 << 25 });
     const resource = createAudioResource(stream, { inlineVolume: true });
     resource.volume.setVolume(0.05);
     return resource;
@@ -42,7 +45,7 @@ async function createResourceInline(song) {
 async function createResource(song) {
 
     // Create an audio stream
-    const stream = ytdl(song.url, { filter: 'audioonly' });
+    const stream = ytdl(song.url, { filter: format => { format.codecs === "opus"; format.container === "webm" }, filter: 'audioonly', highWaterMark: 1 << 25 });
     return createAudioResource(stream);
 
 }
@@ -87,34 +90,31 @@ module.exports.play = async (client, guild) => {
     });
     queue.resource = await createResourceInline(queue.songs[queue.index]);
 
-    /*
-    if (queue.resource.edges) {
-        console.log(queue.resource.edges);
-    }
-    else {
-        console.log("no edges");
-    }
-    if (queue.resource.encoder) {
-        console.log(queue.resource.encoder);
-    } else {
-        console.log("no encoder");
-    }*/
+    // Error occured while creating audio resource
+    if (queue.resource === null) {
 
-    // Play the song
-    queue.audioPlayer.play(queue.resource);
-    sendMessage(queue, client);
-
-    // subscribe to the connection
-    connection.subscribe(queue.audioPlayer);
-
-    // Catch any errors/disconnects
-    queue.audioPlayer.on('error', async error => {
-
-        console.log(`Error: ${error.message} with resource ${queue.resource.metadata}`);
         const message = embed(client.user, "Error Playing", `:question: An error occured when trying to play ${queue.songs[queue.index].title}.\nAttempting to skip to the next song...`);
         await queue.channel.send({ embeds: [message] });
 
-    });
+    } else {
+
+        // Play the song
+        queue.audioPlayer.play(queue.resource);
+        sendMessage(queue, client);
+
+        // subscribe to the connection
+        connection.subscribe(queue.audioPlayer);
+
+        // Catch any errors/disconnects
+        queue.audioPlayer.on('error', async error => {
+
+            console.log(`Error: ${error.message} with resource ${queue.resource.metadata}`);
+            const message = embed(client.user, "Error Playing", `:question: An error occured when trying to play ${queue.songs[queue.index].title}.\nAttempting to skip to the next song...`);
+            await queue.channel.send({ embeds: [message] });
+
+        });
+
+    }
 
     // Wait for the song to finish
     queue.audioPlayer.on(AudioPlayerStatus.Idle, () => {
