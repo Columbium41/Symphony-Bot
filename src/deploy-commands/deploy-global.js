@@ -30,14 +30,14 @@ const { log } = require("../../util/log-error");
 
     try {
 
-        console.log("Started refreshing application guild commands.");
+        console.log("Started refreshing application global commands.");
 
         await rest.put(
             Routes.applicationCommands(process.env.CLIENT_ID),
             {body: commands},
         );
 
-        console.log("Successfully refreshed application guild commands");
+        console.log("Successfully refreshed application global commands");
 
     } catch (error) {
         

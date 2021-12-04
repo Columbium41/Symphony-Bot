@@ -29,7 +29,7 @@ async function sendMessage(queue, client) {
 async function createResourceInline(song) {
 
     // Create an audio stream
-    const stream = ytdl(song.url, { filter: 'audioonly' });
+    const stream = ytdl(song.url, { filter: format => {format.codecs === "opus"; format.container === "webm"}, filter: 'audioonly', highWaterMark: 1 << 25 });
     const resource = createAudioResource(stream, { inlineVolume: true });
     resource.volume.setVolume(0.05);
     return resource;

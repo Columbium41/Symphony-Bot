@@ -45,7 +45,7 @@ module.exports = {
             });
 
             // Send a message once the voice connection has been established
-            connection.on(VoiceConnectionStatus.Ready, async () => {
+            connection.once(VoiceConnectionStatus.Ready, async () => {
 
                 reply = embed(interaction.member.user, "Join", `:speaker: Joined ${userVC.name}.`);
                 return await interaction.reply({ embeds: [reply] });
