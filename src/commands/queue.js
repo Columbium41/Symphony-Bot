@@ -113,7 +113,7 @@ module.exports = {
             // Playlist
             if (ytpl.validateID(songArg)) {
 
-                const playlist = (await ytpl(songArg));
+                const playlist = (await ytpl(songArg, { limit: Infinity } ));
                 const songs = playlist.items;
 
                 // Loop through songs and add them to the queue
