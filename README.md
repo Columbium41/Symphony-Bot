@@ -32,3 +32,6 @@ This bot was written as a substitution for other discord music bots that have be
 - [yt-search](https://www.npmjs.com/package/yt-search) - A youtube search API
 - [ytdl-core](https://www.npmjs.com/package/ytdl-core) - A youtube downloading module
 - [ytpl](https://www.npmjs.com/package/ytpl) - Resolves youtube playlists
+
+## Invite the Bot to your Server!
+Invite Link: [Click Here!](https://discord.com/api/oauth2/authorize?client_id=908930909355511888&permissions=277062143040&scope=bot%20applications.commands)
