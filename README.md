@@ -1,5 +1,5 @@
 # Symphony-Bot
-**A simple discord music bot written with javascript for playing music**
+**A simple discord music bot written with Javascript**
 
 This bot was written as a substitution for other discord music bots that have been shutdown
 
