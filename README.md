@@ -1,9 +1,15 @@
 # Symphony-Bot
-**A simple discord music bot written with Javascript**
+## Table of Contents
+1. [About](#About)
+2. [Bot Features](#Bot-Features)
+3. [What I learned](#What-I-learned)
+4. [Node Dependencies](#Node-Dependencies)
+5. [Invite Link](#Invite-Link)
 
-This bot was written as a substitution for other discord music bots that have been shutdown
+## About <a name="About"></a>
+Symphony is a simple Discord music bot written with Javascript. It was made as a substitution for other Discord music bots that have been shut down by Youtube.
 
-## Bot Features
+## Bot Features <a name="Bot-Features"></a>
 - Play music in voice channels
 - Queue music with direct youtube links or search with keywords
 - Pause, resume, skip, and remove songs from the queue
@@ -11,7 +17,7 @@ This bot was written as a substitution for other discord music bots that have be
 - Loop individual songs or the entire queue
 - Display information such as latency, queue tracks, and player status
 
-## What I learned
+## What I learned <a name="What-I-learned"></a>
 - Javascript syntax
 - Node.js and how to build a Node.js project
 - Basics of Git and version control
@@ -19,7 +25,7 @@ This bot was written as a substitution for other discord music bots that have be
 - Reading documentation and understanding class structure
 - Finding errors and fixing them using an error logging system
 
-## Node Dependencies
+## Node Dependencies <a name="Node-Dependencies"></a>
 - [dotenv](https://www.npmjs.com/package/dotenv) - Loads environment variables from .env files
 - [discord.js](https://www.npmjs.com/package/discord.js) - Node.js module for interacting with Discord API
 - [@discord.js/builders](https://www.npmjs.com/package/@discordjs/builders) - Slash command builder
@@ -33,5 +39,5 @@ This bot was written as a substitution for other discord music bots that have be
 - [ytdl-core](https://www.npmjs.com/package/ytdl-core) - A youtube downloading module
 - [ytpl](https://www.npmjs.com/package/ytpl) - Resolves youtube playlists
 
-## Invite the Bot to your Server!
+## Invite the Bot to your Server! <a name="Invite-Link"></a>
 Invite Link: [Click Here to invite the Bot!](https://discord.com/api/oauth2/authorize?client_id=908930909355511888&permissions=277062143040&scope=bot%20applications.commands)
