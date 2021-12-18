@@ -34,4 +34,4 @@ This bot was written as a substitution for other discord music bots that have be
 - [ytpl](https://www.npmjs.com/package/ytpl) - Resolves youtube playlists
 
 ## Invite the Bot to your Server!
-Invite Link: [Click Here!](https://discord.com/api/oauth2/authorize?client_id=908930909355511888&permissions=277062143040&scope=bot%20applications.commands)
+Invite Link: [Click Here to invite the Bot!](https://discord.com/api/oauth2/authorize?client_id=908930909355511888&permissions=277062143040&scope=bot%20applications.commands)
