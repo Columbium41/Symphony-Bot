@@ -4,8 +4,8 @@
  * A file that handles playing music
 */
 
-const dotenv = require("dotenv");
-dotenv.config();
+//const dotenv = require("dotenv");
+//dotenv.config();
 const ytdl = require("ytdl-core");
 const { embed } = require("../util/embed");
 const { log } = require("../util/log-error");
