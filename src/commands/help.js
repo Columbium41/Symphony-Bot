@@ -4,8 +4,8 @@
  * A command that gives information to the user on how to use the bot
 */
 
-//const dotenv = require("dotenv");
-//dotenv.config();
+const dotenv = require("dotenv");
+dotenv.config();
 
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { embed } = require("../../util/embed");

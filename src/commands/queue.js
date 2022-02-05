@@ -19,13 +19,14 @@ const yts = require("yt-search");
 // @param thumbnail - The thumbnail of the video
 // @param views - The amount of views the video has
 // @param length - The length of the video
-function song(title, url, thumbnail, views, length) {
+function song(title, url, thumbnail, views, length, played) {
 
     this.title = title
     this.url = url
     this.thumbnail = thumbnail
     this.views = views
     this.length = length
+    this.played = played;
 
 }
 
@@ -133,7 +134,7 @@ module.exports = {
                         return await interaction.reply({ embeds: [reply] });
                     }
 
-                    const currentSong = new song(title, url, thumbnail, views, length);
+                    const currentSong = new song(title, url, thumbnail, views, length, false);
                     await addQueue(interaction, currentSong);
 
                 }
@@ -161,7 +162,7 @@ module.exports = {
                     return await interaction.reply({ embeds: [reply] });
                 }
 
-                const currentSong = new song(title, url, thumbnail, views, length);
+                const currentSong = new song(title, url, thumbnail, views, length, false);
                 await addQueue(interaction, currentSong);
 
                 reply = embedVideo(interaction.member.user, "Queue", `:white_check_mark: Queued ${currentSong.title}`, currentSong);
@@ -198,7 +199,7 @@ module.exports = {
                         return await interaction.reply({ embeds: [reply] });
                     }
 
-                    currentSong = new song(title, url, thumbnail, views, length);
+                    currentSong = new song(title, url, thumbnail, views, length, false);
                     await addQueue(interaction, currentSong);
 
                     reply = embedVideo(interaction.member.user, "Queue", `:white_check_mark: Queued ${currentSong.title}`, currentSong);

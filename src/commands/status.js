@@ -5,8 +5,8 @@
 */
 
 const { SlashCommandBuilder } = require("@discordjs/builders");
-//const dotenv = require("dotenv");
-//dotenv.config();
+const dotenv = require("dotenv");
+dotenv.config();
 const { log } = require("../../util/log-error");
 
 module.exports = {

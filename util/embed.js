@@ -4,8 +4,8 @@
  * A file that embeds short messages
 */
 
-//const dotenv = require("dotenv");
-//dotenv.config();
+const dotenv = require("dotenv");
+dotenv.config();
 const numberFormat = new Intl.NumberFormat();
 
 // A function that embeds messages with a title and description

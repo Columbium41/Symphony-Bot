@@ -8,8 +8,8 @@
 const { log } = require("../util/log-error");
 
 // Get environment variables
-//const dotenv = require("dotenv");
-//dotenv.config();
+const dotenv = require("dotenv");
+dotenv.config();
 
 // Get the necessary discord.js classes
 const { Client, Intents, Collection } = require("discord.js");

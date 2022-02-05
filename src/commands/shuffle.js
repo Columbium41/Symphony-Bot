@@ -46,8 +46,8 @@ module.exports = {
                 randomIndexOne = Math.floor(Math.random() * queue.songs.length);
                 randomIndexTwo = Math.floor(Math.random() * queue.songs.length);
 
-                // Check if the random indexes aren't the current song playing
-                if (randomIndexOne === queue.index || randomIndexTwo === queue.index) {
+                // Check if the random indexes aren't the current song playing and that the indexes chosen don't happen to be songs that have already been played
+                if (randomIndexOne === queue.index || randomIndexTwo === queue.index || queue.songs[randomIndexOne].played || queue.songs[randomIndexTwo].played) {
                     continue;
                 } else {
                     
