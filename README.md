@@ -4,12 +4,12 @@
 2. [Bot Features](#Bot-Features)
 3. [What I learned](#What-I-learned)
 4. [Node Dependencies](#Node-Dependencies)
-5. [Invite Link](#Invite-Link)
+5. [Invite Link](#Invite-the-Bot-to-your-Server)
 
-## About <a name="About"></a>
+## About
 Symphony is a simple Discord music bot written with Javascript. It was made as a substitution for other Discord music bots that have been shut down by Youtube.
 
-## Bot Features <a name="Bot-Features"></a>
+## Bot Features
 - Play music in voice channels
 - Queue music with direct youtube links or search with keywords
 - Pause, resume, skip, and remove songs from the queue
@@ -17,7 +17,7 @@ Symphony is a simple Discord music bot written with Javascript. It was made as a
 - Loop individual songs or the entire queue
 - Display information such as latency, queue tracks, and player status
 
-## What I learned <a name="What-I-learned"></a>
+## What I learned
 - Javascript syntax
 - Node.js and how to build a Node.js project
 - Basics of Git and version control
@@ -25,7 +25,7 @@ Symphony is a simple Discord music bot written with Javascript. It was made as a
 - Reading documentation and understanding class structure
 - Finding errors and fixing them using an error logging system
 
-## Node Dependencies <a name="Node-Dependencies"></a>
+## Node Dependencies
 - [dotenv](https://www.npmjs.com/package/dotenv) - Loads environment variables from .env files
 - [discord.js](https://www.npmjs.com/package/discord.js) - Node.js module for interacting with Discord API
 - [@discord.js/builders](https://www.npmjs.com/package/@discordjs/builders) - Slash command builder
@@ -39,5 +39,5 @@ Symphony is a simple Discord music bot written with Javascript. It was made as a
 - [ytdl-core](https://www.npmjs.com/package/ytdl-core) - A youtube downloading module
 - [ytpl](https://www.npmjs.com/package/ytpl) - Resolves youtube playlists
 
-## Invite the Bot to your Server! <a name="Invite-Link"></a>
+## Invite the Bot to your Server!
 Invite Link: [Click Here to invite the Bot!](https://discord.com/api/oauth2/authorize?client_id=908930909355511888&permissions=277062143040&scope=bot%20applications.commands)
