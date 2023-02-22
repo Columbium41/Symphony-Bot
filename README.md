@@ -1,4 +1,5 @@
 # Symphony-Bot
+
 ## Table of Contents
 1. [About](#About)
 2. [Bot Features](#Bot-Features)
@@ -41,3 +42,5 @@ Symphony is a simple Discord music bot written with Javascript. It was made as a
 
 ## Invite the Bot to your Server!
 Invite Link: [Click Here to invite the Bot!](https://discord.com/api/oauth2/authorize?client_id=908930909355511888&permissions=277062143040&scope=bot%20applications.commands)
+
+<img src="https://user-images.githubusercontent.com/75919484/220444988-69384c11-b7ca-4458-ac48-ab5374e99a4a.png" alt="bot profile"/>
